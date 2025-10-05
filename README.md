@@ -98,7 +98,7 @@ ViscariaAssist/
 ├── .firebase/
 ├── .github/
 │
-├── backend/       #From Career-Assist Backend Repo
+├── backend/       #From career-backend Repo
 │   ├── node_modules/
 │   ├── tmp_uploads/
 │   ├── .env
