@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Career Assist — ViscaraiAssist</title>
+  <link rel="icon" href="/favicon.ico">
+  <link href="./css/output.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script type="module" src="./js/career-assist.js" defer></script>
+  
+  <style>
+    :root{
+      --pale-dogwood:#d3ab9e;
+      --pale-dogwood-2:#eac9c1;
+      --champagne-pink:#ebd8d0;
+      --snow:#fffbff;
+      --white:#fefeff;
+    }
+    /* Chrome-tab inspired nav styling */
+    .nav-tab{ @apply px-4 md:px-5 py-2 rounded-t-2xl transition-colors duration-200 cursor-pointer font-medium; }
+    .nav-tab{position:relative;padding:.5rem 1rem;border-radius:.75rem .75rem 0 0;font-weight:600}
+    .nav-tab.inactive{ background: transparent; color: #3a2e2a; }
+    .nav-tab.active{background:#fffbff;border:1px solid #f3e8e3;border-bottom-color:transparent}
+    header.header-bleed{ background: linear-gradient(180deg, var(--snow) 0%, var(--snow) 82%, rgba(255,255,255,0) 100%); }
+    .drawer{ transform:translateX(100%); transition: transform .3s ease; }
+    .drawer.open{ transform:translateX(0); }
+    .reveal{ opacity:0; transform:translateY(12px); transition: all .6s ease; }
+    .reveal.show{ opacity:1; transform:translateY(0); }
+    
+    .survey-chip { transition: all .12s ease; cursor:pointer; }
+    .survey-chip:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.06); }
+
+    .accordion-card { border:1px solid #f3e8e3; border-radius:0.75rem; background:#fff; padding:0.5rem; margin-bottom:0.5rem; }
+    .accordion-header { display:flex; justify-content:space-between; align-items:center; cursor:pointer; padding:0.375rem 0.5rem; }
+    .accordion-body { display:none; padding:0.5rem; border-top:1px dashed #f3e8e3; }
+    .accordion-body.show { display:block; }
+    .role-btn { cursor:pointer; transition: transform .08s ease; }
+    .role-btn:hover { transform: translateY(-3px); }
+
+    /* small roadmap card styles for right panel */
+    .roadmap-step { padding:0.5rem; border-radius:0.5rem; border:1px solid #f3e8e3; background:#fff; margin-bottom:0.5rem; }
+    .bubble { word-break:break-word; }
+
+    .animate-pulse { animation: pulse 1s infinite; }
+    @keyframes pulse { 0%{opacity:.5}50%{opacity:1}100%{opacity:.5} }
+
+  </style>
+</head>
+<body class="bg-white text-[#2b2421] antialiased selection:bg-[#eac9c1] selection:text-black">
+
+<!-- Fixed Navbar -->
+<header id="siteHeader" class="header-bleed fixed top-0 left-0 right-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-white/70 border-b border-[#ebd8d0]">
+  <div class="mx-auto max-w-7xl px-4 md:px-6">
+    <div class="flex items-center justify-between h-16">
+      <a href="index.html" class="flex items-center gap-2 group">
+        <img src="./assets/herologo.png" alt="ViscaraiAssist Logo" class="h-14 w-15 mt-1 rounded-lg shadow-glow">
+        <span class="font-extrabold tracking-tight font-serif text-lg text-[#a62d29]">ViscaraiAssist</span>
+      </a>
+      <nav class="hidden md:flex items-end gap-10">
+        <a href="index.html" data-tab="home" class="nav-tab inactive">Home</a>
+        <a href="career-assist.html" data-tab="career" class="nav-tab inactive">
+          <button data-tab="career-assist" class="nav-tab active">Career Assist</button>
+        </a>
+        <a href="take-test.html" data-tab="test" class="nav-tab inactive">Take Test</a>
+      </nav>
+      <div class="flex items-center gap-3" id="navAuthContainer">
+        <a id="navLogin" href="login.html" data-tab="login" class="nav-tab inactive">
+        <button class="inline-flex btn-login items-center gap-1 rounded-full px-2 py-2 text-xs md:px-4 md:py-2 md:text-sm font-semibold bg-[#bc7e6a] hover:bg-[#d3ab9e] text-white shadow-glow transition">
+          <span>Login / Sign up</span>
+        </button>
+        </a>
+        <button id="hamburger" class="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#ebd8d0] bg-white/70 hover:bg-[#f7f0ec] transition" aria-label="Open menu">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div id="drawer" class="drawer fixed top-0 right-0 h-screen w-72 bg-white border-l border-[#f3e8e3] shadow-2xl z-50 p-5 md:hidden">
+    <div class="flex items-center justify-between mb-6">
+      <div class="font-bold">Menu</div>
+      <button id="drawerCloseBtn" class="h-9 w-9 inline-flex items-center justify-center rounded-lg hover:bg-[#f7f0ec]">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path stroke-linecap="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div class="space-y-2">
+      <a href="index.html" data-tab="home" class="block px-3 py-3 rounded-xl hover:bg-[#f7f0ec]">Home</a>
+      <a href="career-assist.html" data-tab="career" class="block px-3 py-3 rounded-xl bg-[#fffbff] border border-[#f3e8e3]">Career Assist</a>
+      <a href="take-test.html" data-tab="test" class="block px-3 py-3 rounded-xl hover:bg-[#f7f0ec]">Take Test</a>
+    </div>
+  </div>
+</header>
+
+<!-- Page Content -->
+<main class="pt-24">
+  <div class="mx-auto max-w-7xl px-4 md:px-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+ <!-- Left: Chat Window -->
+    <section class="lg:col-span-2">
+      <div class="rounded-2xl border border-[#ebd8d0] bg-[#fffbff]">
+        <div class="flex items-center justify-center border-b border-[#f3e8e3] px-4 py-3">
+          <h2 class="font-semibold tracking-wide">CAREER ASSIST</h2>
+        </div>
+
+       <!-- Container manages height -->
+    <div id="chatContainer" class="flex flex-col min-h-[60vh] md:min-h-[70vh]">
+
+
+  <!-- Intro Section -->
+     <div id="surveyIntro" class="shrink-0 px-5 pt-5">
+        <div class="rounded-xl bg-white border border-[#f3e8e3] p-4 text-center">
+         <p class="font-semibold text-lg">Hi <span id="caUser">[UserName]</span>, 👋</p>
+         <p class="text-sm text-[#6b5b55] mt-1">Let’s Build Your Path Towards Your Dream Job!</p>
+         <button id="startSurvey" type="button"
+          class="mt-3 inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-semibold bg-[#d3ab9e] hover:bg-[#bc7e6a] text-white shadow-glow transition">
+          Start Your Survey
+         </button>
+       </div>
+     </div>
+
+      <div id="chatScroll" class="px-5 py-4 space-y-4 h-[48vh] md:h-[56vh] overflow-y-auto"></div>
+        <div class="border-t border-[#f3e8e3] p-3">
+          <div class="flex items-center gap-2 rounded-xl border border-[#f3e8e3] bg-white px-2">
+            <button id="attachBtn" class="shrink-0 h-10 w-10 inline-flex items-center justify-center rounded-lg hover:bg-[#f7f0ec]">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-width="2" d="M12 5v14M5 12h14"/></svg>
+            </button>
+           <!-- Hidden file input with attach button -->
+          <input id="fileInput" type="file" accept="image/*,application/pdf,text/plain" multiple style="display:none" />
+            <!-- Voice input button -->
+            <button id="micBtn" class="shrink-0 h-10 w-10 inline-flex items-center justify-center rounded-lg hover:bg-[#f7f0ec]" title="Voice input">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-width="2" d="M12 3a3 3 0 00-3 3v5a3 3 0 106 0V6a3 3 0 00-3-3zM19 12a7 7 0 01-14 0M12 19v2"/>
+              </svg>
+            </button>
+            <textarea id="composer" rows="1" placeholder="Type your thoughts here..."
+              class="min-h-[42px] max-h-32 grow resize-none px-2 py-2 outline-none text-sm"></textarea>
+            <button id="sendBtn" class="shrink-0 h-9 w-12 inline-flex items-center justify-center rounded-lg bg-[#d3ab9e] hover:bg-[#bc7e6a] text-white transition" aria-label="Send">
+              <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12l14-7-7 14-2-5-5-2z"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <!-- Right: Cards panel -->
+    <aside class="space-y-4">
+      <!-- Day-in-the-Life Simulator card -->
+      <div class="animated-border">
+        <div class="card-content">
+          <div class="px-4 py-3 border-b border-[#f3e8e3]">
+            <h3 class="font-semibold">Day-in-the-Life Simulator</h3>
+          </div>
+          <div class="p-4 text-sm text-[#6b5b55]">
+            Experience tasks and real workday feels in your chosen career field.
+            <br>
+            <button class="mt-3 inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold bg-[#d3ab9e] hover:bg-[#bc7e6a] text-white shadow-glow transition">
+              Start Your Experience
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Skill Gap Analyzer Card-->
+      <div class="animated-border">
+        <div class="card-content">
+          <div class="px-4 py-3 border-b border-[#f3e8e3]">
+            <h3 class="font-semibold">Skill Gap Analyzer</h3>
+          </div>
+          <div class="p-4 space-y-3">
+            <div class="flex items-center gap-3">
+              <div class="relative h-14 w-14 rounded-full bg-[#f7f0ec]">
+                <svg viewBox="0 0 36 36" class="absolute inset-0">
+                  <path d="M18 2 a 16 16 0 1 1 0 32 a 16 16 0 1 1 0 -32"
+                        fill="none" stroke="#eac9c1" stroke-width="4" stroke-dasharray="65,100" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <p class="text-sm"><span class="font-semibold text-[#bc7e6a]">You are 50% away</span> from your dream job.</p>
+            </div>
+
+            <div class="grid grid-cols-3 gap-3 text-xs">
+              <div class="col-span-1 text-[#6b5b55]">Your Current Skills:</div>
+              <div class="col-span-2">Beginner Python, Spreadsheets, SQL</div>
+
+              <div class="col-span-1 text-[#6b5b55]">Skills To Be Learned:</div>
+              <div class="col-span-2">Advanced Python, Data Analysis, Statistics</div>
+
+              <div class="col-span-1 text-[#6b5b55]">Your Goal:</div>
+              <div class="col-span-2 font-medium text-[#bc7e6a]">Data Scientist</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Your Generated Roadmap Card-->
+      <div class="animated-border">
+        <div class="card-content">
+          <div class="px-4 py-3 border-b border-[#f3e8e3]">
+            <h3 class="font-semibold">Your Generated Roadmap</h3>
+          </div>
+          <div id="roadmapEmpty" class="p-4 text-sm text-[#6b5b55]">
+            Your chosen roadmap will be displayed here including your study materials.
+            <div class="mt-3 flex items-center justify-center">
+              <svg class="h-14 w-14" viewBox="0 0 24 24" fill="none" stroke="#bc7e6a" stroke-width="1.5">
+                <path d="M4 6h16v10H4z"/><path d="M8 10h8M8 13h8"/><path d="M7 18h10"/>
+              </svg>
+            </div>
+          </div>
+          <ul id="roadmapList" class="hidden p-4 space-y-2 text-sm"></ul>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</main>
+<br><br>
+<!-- Footer -->
+<footer class="border-t border-[#f3e8e3] py-10">
+  <div class="mx-auto max-w-7xl px-6 md:px-8 text-sm grid grid-cols-1 md:grid-cols-4 gap-8">
+    <div class="space-y-3">
+      <div class="flex items-center space-x-2">
+        <img src="./assets/logo.png" alt="ViscaraiAssist Logo" class="h-32 w-32 mb-10 rounded-lg shadow-glow">
+        <span class="text-xl font-semibold font-serif text-[#a62d29] mb-20">ViscaraiAssist</span>
+      </div>
+      <p class="text-[#6b5b55] text-sm">We turn career confusion into career clarity with the power of AI. <br>Our intelligent roadmaps guide you step by step, helping you explore the right opportunities that match your skills and dreams. From discovering career paths<br> to landing your dream job, we make the journey simple, smart, and future-ready.</p>
+      <div class="flex space-x-3 pt-3">
+        <a href="#" class="text-[#6b5b55] hover:text-black "><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="text-[#6b5b55] hover:text-black"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="text-[#6b5b55] hover:text-black"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" class="text-[#6b5b55] hover:text-black"><i class="fab fa-instagram"></i></a>
+      </div>
+    </div>
+
+    <div class=" mt-8 ml-8">
+      <h3 class="font-semibold text-[#6b5b55] mb-3">Quick Links</h3>
+      <ul class="space-y-2">
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">Home</a></li>
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">Career Assist</a></li>
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">Take Test</a></li>
+      </ul>
+    </div>
+
+    <div class=" mt-8 ml-8">
+      <h3 class="font-semibold text-[#6b5b55] mb-3">Site Inforamtion</h3>
+      <ul class="space-y-2">
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">Career Assistant</a></li>
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">Job Recommendations</a></li>
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">AI Interviewer</a></li>
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">MockTests</a></li>
+      </ul>
+    </div>
+
+    <div class=" mt-8 ml-8">
+      <h3 class="font-semibold text-[#6b5b55] mb-3">About Us</h3>
+      <ul class="space-y-2">
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">Contact Us</a></li>
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">Email</a></li>
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">Terms of Service</a></li>
+      </ul>
+    </div>
+  </div>
+     <!-- Bottom Small tag--> 
+  <div class="mt-8 text-center text-xs text-black">
+    © 2025 ViscaraiAssist. All rights reserved.
+  </div>
+</footer>
+
+<script type="module" src="./js/header.js"></script>
+<script type="module" src="./js/auth.js"></script>
+
+</body>
+</html>

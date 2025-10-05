@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> 
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Personalised Career Advisor – Home</title>
+  <link href="./css/output.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script type="module" src="./js/main.js" defer></script>
+  <script>
+    /* Using Tailwind with our palette via CSS variables + arbitrary colors */
+    window.tailwind.config = { 
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          },
+          boxShadow: {
+            glow: '0 8px 30px rgba(211,171,158,0.35)',
+          },
+          keyframes: {
+            fadeUp: { '0%': {opacity:0, transform:'translateY(20px)'}, '100%': {opacity:1, transform:'translateY(0)'} },
+            float: { '0%,100%': { transform:'translateY(0)' }, '50%': { transform:'translateY(-6px)' } },
+            slideInRight: { '0%': { transform:'translateX(100%)' }, '100%': { transform:'translateX(0)' }},
+            pingSoft: { '0%': { transform:'scale(1)', opacity:1 }, '100%': { transform:'scale(1.08)', opacity:.35 } }
+          },
+          animation: {
+            fadeUp: 'fadeUp .7s ease-out both',
+            float: 'float 6s ease-in-out infinite',
+            slideInRight: 'slideInRight .35s ease-out both',
+            pingSoft: 'pingSoft 2s ease-out infinite'
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --pale-dogwood:#d3ab9e;       
+      --pale-dogwood-2:#eac9c1;      
+      --champagne-pink:#ebd8d0;     
+      --snow:#fffbff;               
+      --white:#fefeff;               
+    }
+    /* Chrome-tab inspired nav styling */
+    .nav-tab{ @apply px-4 md:px-5 py-2 rounded-t-2xl transition-colors duration-200 cursor-pointer font-medium; }
+    .nav-tab{position:relative;padding:.5rem 1rem;border-radius:.75rem .75rem 0 0;font-weight:600}
+    .nav-tab.inactive{ background: transparent; color: #3a2e2a; }
+    .nav-tab.active{background:#fffbff;border:1px solid #f3e8e3;border-bottom-color:transparent}
+    header.header-bleed{ background: linear-gradient(180deg, var(--snow) 0%, var(--snow) 82%, rgba(255,255,255,0) 100%); }
+    .drawer{ transform:translateX(100%); transition: transform .3s ease; }
+    .drawer.open{ transform:translateX(0); }
+    .reveal{ opacity:0; transform:translateY(12px); transition: all .6s ease; }
+    .reveal.show{ opacity:1; transform:translateY(0); }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-[#3a2e2a] font-display selection:bg-[#eac9c1] selection:text-black">
+
+<!-- Fixed Navbar -->
+<header id="siteHeader" class="header-bleed fixed top-0 left-0 right-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-white/70 border-b border-[#ebd8d0]">
+  <div class="mx-auto max-w-7xl px-4 md:px-6">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo -->
+      <a href="index.html" class="flex items-center gap-2 group">
+        <img src="./assets/herologo.png" alt="ViscaraiAssist Logo" class="h-14 w-15 mt-1 rounded-lg shadow-glow">
+        <span class="font-extrabold tracking-tight font-serif text-lg text-[#a62d29]">ViscaraiAssist</span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-end gap-10">
+        <a href="index.html" data-tab="home" class="nav-tab inactive">
+          <button data-tab="home" class="nav-tab active">Home</button>
+        </a>
+        <a href="career-assist.html" data-tab="career" class="nav-tab inactive">
+          Career Assist
+        </a>
+        <a href="take-test.html" data-tab="test" class="nav-tab inactive">Take Test</a>
+      </nav>
+
+      <!-- Right Controls -->
+      <div class="flex items-center gap-3" id="navAuthContainer">
+        <a id="navLogin"  href="login.html" data-tab="login" class="nav-tab inactive">
+        <button 
+          class="inline-flex btn-login items-center gap-1 rounded-full px-2 py-2 text-xs 
+                 md:px-4 md:py-2 md:text-sm font-semibold
+                 bg-[#bc7e6a] hover:bg-[#d3ab9e] text-white shadow-glow transition">
+          <span>Login / Sign up</span>
+        </button>
+        </a>
+
+        <!-- Mobile Hamburger -->
+        <button id="hamburger" class="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#ebd8d0] bg-white/70 hover:bg-[#f7f0ec] transition" aria-label="Open menu">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Drawer -->
+  <div id="drawer" class="drawer fixed top-0 right-0 h-screen w-72 bg-white border-l border-[#f3e8e3] shadow-2xl z-50 p-5 md:hidden">
+    <div class="flex items-center justify-between mb-6">
+      <div class="font-bold">Menu</div>
+      <button id="drawerCloseBtn" class="h-9 w-9 inline-flex items-center justify-center rounded-lg hover:bg-[#f7f0ec]">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path stroke-linecap="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div class="space-y-2">
+      <a href="index.html" data-tab="home" class="block px-3 py-3 rounded-xl bg-[#fffbff] border border-[#f3e8e3]">Home</a>
+      <a href="career-assist.html" data-tab="career" class="block px-3 py-3 rounded-xl hover:bg-[#f7f0ec]">Career Assist</a>
+      <a href="take-test.html" data-tab="test" class="block px-3 py-3 rounded-xl hover:bg-[#f7f0ec]">Take Test</a>
+    </div>
+  </div>
+</header>
+
+
+  <!-- MAIN CONTENT -->
+  <main id="home" class="pt-24 md:pt-28">
+    <!-- Hero Intro -->
+  <section class="relative">
+      <div class="mx-auto max-w-7xl px-4 md:px-6">
+        <div class="grid md:grid-cols-2 gap-10 items-center">
+          <div class="reveal">
+            <h1 class="text-3xl md:text-5xl font-extrabold leading-tight text-[#2a2421]">
+              PERSONALISED <span class="text-[#bc7e6a]">CAREER ADVISOR</span>
+            </h1>
+            <p class="mt-4 text-lg text-[#6b5b55] max-w-prose">
+              Find your perfect career path with tailored recommendations powered by Generative AI.
+              Explore roles, close skill gaps, and follow a personalised roadmap.
+            </p>
+            <div class="mt-6 flex gap-3 items-center">
+              <button id="ctaBtn" class="group inline-flex items-center gap-2 rounded-2xl bg-[#d3ab9e] hover:bg-[#bc7e6a] text-white px-6 py-3 font-semibold shadow-glow transition">
+                <span id="ctaText">Get Started</span>
+                <svg class="h-5 w-5 transition group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </button>
+              <div class="relative">
+                <span class="inline-block text-xs text-[#6b5b55]">No sign-up required to preview</span>
+              </div>
+            </div>
+          </div>
+
+<!-- Hero Illustration -->
+  <div class="reveal">
+    <div class="relative">
+    <div class="absolute -inset-2 rounded-3xl bg-[#f7f0ec] blur-xl"></div>
+    <div class="relative rounded-3xl border border-[#f3e8e3] bg-[#fffbff] p-6 shadow-glow">
+      
+      <!-- Auto Flip Container -->
+      <div class="perspective">
+        <div class="relative w-full aspect-[4/3] preserve-3d animate-flip rounded-2xl">
+          
+          <!-- Front Side -->
+          <div class="absolute inset-0 backface-hidden rounded-2xl overflow-hidden">
+            <img src="./assets/hero-front.png" alt="Front Image" class="w-full h-full object-cover rounded-2xl" />
+          </div>
+
+          <!-- Back Side -->
+          <div class="absolute inset-0 backface-hidden rotate-y-180 rounded-2xl overflow-hidden">
+            <img src="./assets/hero-back.png" alt="Back Image" class="w-full h-full object-cover rounded-2xl" />
+          </div>
+        </div>
+      </div>
+
+      <p class="mt-3 text-center text-sm text-[#6b5b55]">Where Ambition Meets Intelligence.</p>
+     </div>
+    </div>
+   </div>
+  </section>
+
+<!-- How it works section -->
+<section id="how" class="mt-16 md:mt-24 pb-16">
+  <div class="mx-auto max-w-7xl px-4 md:px-6">
+    <h2 class="text-2xl md:text-3xl font-extrabold text-[#2a2421] mb-6">HOW IT WORKS</h2>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+
+      <!-- Card 1 -->
+      <div class="feature-card reveal group">
+        <!-- Icon + Heading-->
+        <div class="flex items-center gap-3 mb-2">
+         <img src="./assets/card1.png" alt="ViscaraiAssist Logo" class="h-14 w-15 mt-1 rounded-lg shadow-glow">
+          <h3 class="font-bold">Explore Career Paths</h3>
+        </div>
+        <!-- Card with description -->
+        <div class="rounded-2xl border border-[#f3e8e3] bg-[#fffbff] p-5 transition hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#d3ab9e]/60">
+          <p class="text-medium text-[#6b5b55]">
+            Choosing the right career can feel overwhelming, but we make it simple. With the help of AI, you can explore multiple career options that align with your skills, strengths, and personal interests.
+            From today’s in-demand jobs to future opportunities, we help you see what fits best and give you a clear direction to move forward toward a career you’ll love..
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="feature-card reveal group">
+        <div class="flex items-center gap-3 mb-2">
+          <img src="./assets/card2.png" alt="ViscaraiAssist Logo" class="h-14 w-15 mt-1 rounded-lg shadow-glow">
+          <h3 class="font-bold">Future Job Insight</h3>
+        </div>
+        <div class="rounded-2xl border border-[#f3e8e3] bg-[#fffbff] p-5 transition hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#d3ab9e]/60">
+          <p class="text-medium text-[#6b5b55]">
+            Stay ahead by understanding where the job market is heading. We highlight upcoming roles and industries that are set to grow, so you can prepare for tomorrow’s opportunities today. 
+            This helps you plan smarter and build skills that will keep you future-ready.With these insights, you’ll see how your career can evolve in the changing world of work.
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="feature-card reveal group">
+        <div class="flex items-center gap-3 mb-2">
+          <img src="./assets/card3.png" alt="ViscaraiAssist Logo" class="h-14 w-15 mt-1 rounded-lg shadow-glow">
+          <h3 class="font-bold">Interactive Roadmap</h3>
+        </div>
+        <div class="rounded-2xl border border-[#f3e8e3] bg-[#fffbff] p-5 transition hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#d3ab9e]/60">
+          <p class="text-medium text-[#6b5b55]">
+            Your career journey becomes clearer with a step-by-step roadmap built just for you. It breaks down your big goals into smaller milestones that are easier to achieve.
+            <br>You’ll know what skills to build, what resources to follow, and how to track your growth. This way, your path toward success stays organized, practical, and motivating.
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="feature-card reveal group">
+        <div class="flex items-center gap-3 mb-2">
+          <img src="./assets/card4.png" alt="ViscaraiAssist Logo" class="h-14 w-15 mt-1 rounded-lg shadow-glow">
+          <h3 class="font-bold">Tracking Progress</h3>
+        </div>
+        <div class="rounded-2xl border border-[#f3e8e3] bg-[#fffbff] p-5 transition hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#d3ab9e]/60">
+          <p class="text-medium text-[#6b5b55]">
+            Your growth deserves to be visible, and that’s exactly what this feature offers. 
+            Every test you complete, skill you improve, or milestone you achieve gets recorded in your personal dashboard.
+            You’ll see charts, stats, and achievements that reflect your journey step by step. This not only helps you measure improvement but also keeps you motivated to push further.
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="feature-card reveal group">
+        <div class="flex items-center gap-3 mb-2">
+         <img src="./assets/card5.png" alt="ViscaraiAssist Logo" class="h-14 w-15 mt-1 rounded-lg shadow-glow">
+          <h3 class="font-bold">Skill Improviser</h3>
+        </div>
+        <div class="rounded-2xl border border-[#f3e8e3] bg-[#fffbff] p-5 transition hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#d3ab9e]/60">
+          <p class="text-medium text-[#6b5b55]">
+           Put your preparation to the test with career-focused assessments designed around your goals.
+          Whether it’s aptitude, coding, domain-specific knowledge, or soft skills, you can practice with challenges that match your path.
+          <br>Each test not only sharpens your abilities but also shows where you stand right now. With every attempt, you get closer to turning your career goals into reality.
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="feature-card reveal group">
+        <div class="flex items-center gap-3 mb-2">
+          <img src="./assets/card6.png" alt="ViscaraiAssist Logo" class="h-14 w-15 mt-1 rounded-lg shadow-glow">
+          <h3 class="font-bold">Test Your Goal</h3>
+        </div>
+        <div class="rounded-2xl border border-[#f3e8e3] bg-[#fffbff] p-5 transition hover:-translate-y-2 hover:shadow-2xl hover:shadow-[#d3ab9e]/60">
+          <p class="text-medium text-[#6b5b55]">
+            Dreaming is the first step, but testing yourself brings you closer to achieving it.Here, you can take practice challenges that are built around your career goals whether it’s cracking aptitude, coding, or mastering subject knowledge. 
+            <br>Each test gives you instant insights on where you shine and where to improve. Think of it as your personal practice ground, helping you get ready for the real opportunities ahead.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<!-- Footer -->
+<footer class="border-t border-[#f3e8e3] py-10">
+  <div class="mx-auto max-w-7xl px-6 md:px-8 text-sm grid grid-cols-1 md:grid-cols-4 gap-8">
+    
+    <!-- Logo + Info -->
+    <div class="space-y-3">
+      <div class="flex items-center space-x-2">
+        <img src="./assets/logo.png" alt="ViscaraiAssist Logo" class="h-32 w-32 mb-10 rounded-lg shadow-glow">
+        <span class="text-xl font-semibold font-serif text-[#a62d29] mb-20">ViscaraiAssist</span>
+      </div>
+      <p class="text-[#6b5b55] text-sm">We turn career confusion into career clarity with the power of AI. <br>Our intelligent roadmaps guide you step by step, helping you explore the right opportunities that match your skills and dreams. From discovering career paths<br> to landing your dream job, we make the journey simple, smart, and future-ready.</p>
+      <div class="flex space-x-3 pt-3">
+        <a href="#" class="text-[#6b5b55] hover:text-black "><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="text-[#6b5b55] hover:text-black"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="text-[#6b5b55] hover:text-black"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" class="text-[#6b5b55] hover:text-black"><i class="fab fa-instagram"></i></a>
+      </div>
+    </div>
+
+    <!-- Coloumn 1 -->
+    <div class=" mt-8 ml-8">
+      <h3 class="font-semibold text-[#6b5b55] mb-3">Quick Links</h3>
+      <ul class="space-y-2">
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">Home</a></li>
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">Career Assist</a></li>
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">Take Test</a></li>
+      </ul>
+    </div>
+
+    <!-- Coloumn 2 -->
+    <div class=" mt-8 ml-8">
+      <h3 class="font-semibold text-[#6b5b55] mb-3">Site Inforamtion</h3>
+      <ul class="space-y-2">
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">Career Assistant</a></li>
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">Job Recommendations</a></li>
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">AI Interviewer</a></li>
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">MockTests</a></li>
+      </ul>
+    </div>
+
+    <!-- Coloumn 3 -->
+    <div class=" mt-8 ml-8">
+      <h3 class="font-semibold text-[#6b5b55] mb-3">About Us</h3>
+      <ul class="space-y-2">
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">Contact Us</a></li>
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">Email</a></li>
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">Terms of Service</a></li>
+      </ul>
+    </div>
+  </div>
+
+   <!-- Bottom Small tag--> 
+  <div class="mt-8 text-center text-xs text-black">
+    © 2025 ViscaraiAssist. All rights reserved.
+  </div>
+</footer>
+  </main>
+
+  <!-- Fluid-Splash Cursor Overlay (Tailwind + Vanilla JS) -->
+ <div id="splash-cursor-overlay" class="fixed inset-0 z-50 pointer-events-none">
+    <canvas id="fluid" class="block w-screen h-screen"></canvas>
+ </div>
+<script type="module" src="./js/auth.js"></script>
+<script type="module" src="./js/header.js"></script>
+</body>
+</html>

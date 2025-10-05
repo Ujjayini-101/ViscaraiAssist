@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  @keyframes spin-border {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .animated-border {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1rem; /* rounded-2xl */
+    padding: 4px; /* border thickness */
+  }
+
+  .animated-border::before {
+    content: "";
+    position: absolute;
+    inset: -50%;
+    background: conic-gradient(
+      #c03934,
+      #FFB5A7,
+      #FCD5CE,
+      #F9DCC4,
+      #c43e3a
+    );
+    animation: spin-border 6s linear infinite;
+    z-index: 0;
+  }
+
+  .animated-border > .card-content {
+    position: relative;
+    border-radius: 1rem;
+    background: white;
+    z-index: 1;
+  }
+}
+
+.perspective {
+  perspective: 1000px;
+}
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+.backface-hidden {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}

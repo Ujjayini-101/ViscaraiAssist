@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ViscaraiAssist — Login</title>
+  <link rel="icon" href="./assets/logo.svg" />
+  <link href="./css/output.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="bg-[#fffbff] text-[#3e251b] font-sans min-h-screen flex flex-col selection:bg-[#eac9c1] selection:text-black">
+  <main class="max-w-[1250px] mx-auto my-10 p-5 w-full">
+    <section class="grid md:grid-cols-[1.2fr_1.3fr] bg-white rounded-[18px] shadow-[0_18px_35px_rgba(62,37,27,.12)] overflow-hidden" aria-label="Login / Sign up">
+      <aside class="relative p-10 text-white bg-gradient-to-br from-[#bc7e6a] via-[#d3ab9e] to-[#985944] flex flex-col justify-center min-h-[750px] md:min-h-[600px]">
+        <h1 class="text-2xl md:text-3xl font-extrabold mb-2 text-[#601c19fe]">Welcome to ViscaraiAssist</h1>
+        <p class="welcome-desc text-[#F8EDEB] mb-8 text-base md:text-lg leading-relaxed">
+          Your Vision, your Career—powered by an AI Assistant.<br>
+          ViscaraiAssist brings Vision, Career, and AI together.<br>
+          Explore new paths, test your skills, and grow with confidence.
+        </p>
+
+        <div class="flex items-center justify-center h-40 mb-6">
+          <div class="w-[86px] h-[86px] md:w-[96px] md:h-[96px] rounded-[20px] grid place-items-center bg-[#f3e8e3] shadow-[0_10px_25px_rgba(62,37,27,.10)] overflow-hidden">
+            <img src="./assets/herologo.png" alt="Website Logo" class="w-full h-full object-cover rounded-lg" />
+          </div>
+        </div>
+
+        <div class="grid gap-4">
+          <button id="btnLeftSignIn" class="rounded-full border-2 border-white/70 text-white font-bold py-3 hover:bg-white/10 transition">SIGN IN</button>
+
+          <div class="text-center font-semibold opacity-85">or</div>
+
+          <button id="btnGoogle" class="flex items-center justify-center gap-2 bg-white text-black py-3 rounded-full shadow-sm hover:shadow-lg transition">
+            <!-- SVG Google icon -->
+            <svg viewBox="0 0 24 24" class="w-5 h-5">
+              <path d="M21.6 12.23c0-.74-.06-1.28-.18-1.84H12v3.34h5.52c-.11.83-.7 2.07-2.02 2.9l-.02.13 2.94 2.28.2.02c1.84-1.7 2.98-4.2 2.98-6.83z" fill="#4285F4"/>
+              <path d="M12 22c2.7 0 4.97-.9 6.63-2.44l-3.16-2.44c-.85.56-1.98.95-3.47.95-2.66 0-4.92-1.7-5.73-4.05l-.12.01-3.19 2.48-.04.11C4.53 19.98 7.98 22 12 22z" fill="#34A853"/>
+              <path d="M6.27 14.02c-.2-.6-.32-1.24-.32-1.92s.12-1.32.32-1.92l-.01-.13-3.22-2.5-.11.05A9.98 9.98 0 0 0 2 12c0 1.6.38 3.12 1.05 4.45l3.22-2.43z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.87 0 3.13.8 3.85 1.47l2.81-2.74C16.96 2.66 14.7 2 12 2 7.98 2 4.53 4.02 3.05 7.55l3.21 2.45C7.08 7.65 9.34 5.38 12 5.38z" fill="#EA4335"/>
+            </svg>
+            <span>Sign in with Google</span>
+          </button>
+
+          <div class="block md:hidden">
+            <button id="btnOpenSheet" class="w-full flex items-center justify-center bg-white text-black font-bold py-3 rounded-full shadow-sm hover:shadow-lg transition">
+              LOGIN / SIGN UP
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <section id="authPanel" class="p-9 relative hidden md:block " aria-live="polite">
+        <h2 id="authTitle" class="text-2xl font-extrabold text-[#3e251b] mb-4">Login to ViscaraiAssist</h2>
+
+        <form id="authForm" class="grid gap-4" novalidate>
+          <div id="authRowNames" class="grid grid-cols-2 gap-4">
+            <div class="grid gap-1">
+              <label for="name" class="text-sm font-semibold text-[#6b5b55]">Name</label>
+              <input id="name" name="name" class="w-full px-4 py-3 rounded-xl border border-[#f3e8e3] bg-[#fffbff] focus:border-[#bc7e6a] focus:ring-4 focus:ring-[#f7f0ec] outline-none" type="text" placeholder="Your full name">
+            </div>
+            <div class="grid gap-1">
+              <label for="username" class="text-sm font-semibold text-[#6b5b55]">Username</label>
+              <input id="username" name="username" class="w-full px-4 py-3 rounded-xl border border-[#f3e8e3] bg-[#fffbff] focus:border-[#bc7e6a] focus:ring-4 focus:ring-[#f7f0ec] outline-none" type="text" placeholder="Pick a username">
+            </div>
+          </div>
+
+          <div class="grid gap-1">
+            <label for="email" class="text-sm font-semibold text-[#6b5b55]">Email</label>
+            <input id="email" name="email" class="w-full px-4 py-3 rounded-xl border border-[#f3e8e3] bg-[#fffbff] focus:border-[#bc7e6a] focus:ring-4 focus:ring-[#f7f0ec] outline-none" type="email" placeholder="you@example.com" required>
+          </div>
+
+          <div class="grid gap-1 relative">
+            <label for="password" class="text-sm font-semibold text-[#6b5b55]">Password</label>
+            <input id="password" name="password" class="w-full px-4 py-3 rounded-xl border border-[#f3e8e3] bg-[#fffbff] focus:border-[#bc7e6a] focus:ring-4 focus:ring-[#f7f0ec] outline-none pr-10" type="password" placeholder="•••••••••••" required>
+            <i id="togglePassword" class="fa-solid fa-eye absolute right-5 top-[44px] text-gray-500 cursor-pointer "></i>
+          </div>
+
+          <p id="helperText" class="text-xs text-[#6b5b55] mt-1">
+            Creating an account means you agree to our Terms & Privacy Policy.
+          </p>
+
+          <div class="flex items-center justify-between mt-2">
+            <a id="toggleMode" href="#" class="text-[#bc7e6a] font-bold">Have an account? Sign in</a>
+          </div>
+
+          <button id="submitBtn" class="absolute right-6 bottom-6 inline-flex items-center gap-2 bg-[#bc7e6a] text-white px-6 py-3 rounded-full font-extrabold shadow-sm hover:bg-[#b66d57] transition" type="submit">
+            Login / Sign Up
+          </button>
+        </form>
+      </section>
+    </section>
+  </main>
+
+  <!-- Mobile Bottom Sheet Appearance -->
+  <div id="sheet" class="fixed left-0 right-0 bottom-0 translate-y-full transition-transform duration-300 ease-in-out bg-white rounded-t-[20px] shadow-[0_-20px_44px_rgba(62,37,27,.18)] z-50 p-6 pb-24 md:hidden">
+    <div class="auth">
+      <p class="text-center text-xs text-gray-400 mb-3" aria-hidden="true">Swipe down to close</p>
+      <h2 id="sheetTitle" class="text-xl font-extrabold mb-4">Login to ViscaraiAssist</h2>
+      <form id="sheetForm" class="grid gap-4" novalidate>
+        <div id="sheetRowNames" class="grid grid-cols-2 gap-4">
+          <div class="grid gap-1">
+            <label for="s-name" class="text-sm font-semibold text-[#6b5b55]">Name</label>
+            <input id="s-name" name="name" class="w-full px-4 py-3 rounded-xl border border-[#f3e8e3] bg-[#fffbff]" type="text" placeholder="Your full name">
+          </div>
+          <div class="grid gap-1">
+            <label for="s-username" class="text-sm font-semibold text-[#6b5b55]">Username</label>
+            <input id="s-username" name="username" class="w-full px-4 py-3 rounded-xl border border-[#f3e8e3] bg-[#fffbff]" type="text" placeholder="Pick a username">
+          </div>
+        </div>
+
+        <div class="grid gap-1">
+          <label for="s-email" class="text-sm font-semibold text-[#6b5b55]">Email</label>
+          <input id="s-email" name="email" class="w-full px-4 py-3 rounded-xl border border-[#f3e8e3] bg-[#fffbff]" type="email" placeholder="you@example.com" required>
+        </div>
+
+        <div class="grid gap-1 relative">
+          <label for="s-password" class="text-sm font-semibold text-[#6b5b55]">Password</label>
+          <input id="s-password" name="password" class="w-full px-4 py-3 rounded-xl border border-[#f3e8e3] bg-[#fffbff] pr-10" type="password" placeholder="•••••••••••" required>
+          <i id="toggleSheetPassword" class="fa-solid fa-eye absolute right-5 top-[44px] text-gray-500 cursor-pointer"></i>
+        </div>
+
+        <p id="sheetHelper" class="text-xs text-[#6b5b55] mt-1">
+          Creating an account means you agree to our Terms & Privacy Policy.
+        </p>
+
+        <div class="flex items-center justify-between mt-2">
+          <a id="sheetToggle" href="#" class="text-[#bc7e6a] font-bold">Have an account? Sign in</a>
+        </div>
+
+        <button id="sheetSubmit" class="fixed right-5 bottom-5 inline-flex items-center gap-2 bg-[#bc7e6a] text-white px-6 py-3 rounded-full font-extrabold shadow-sm hover:bg-[#b66d57]" type="submit">
+          Login / Sign Up
+        </button>
+      </form>
+    </div>
+  </div>
+
+<script type="module" src="./js/auth.js"></script>
+<script type="module" src="./js/login.js"></script>
+<script type="module" src="./js/header.js"></script>
+</body>
+</html>

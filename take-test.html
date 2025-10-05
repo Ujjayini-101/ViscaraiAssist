@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ViscaraiAssist — Take Test</title>
+  <link rel="icon" href="/public/assets/logo.svg" />
+  <link href="./css/output.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="./js/take-test.js" defer></script>
+  <style>
+    :root{
+      --pale-dogwood:#d3ab9e;        
+      --pale-dogwood-2:#eac9c1;      
+      --champagne-pink:#ebd8d0;      
+      --snow:#fffbff;                
+      --white:#fefeff;               
+    }
+    /* Chrome-tab inspired nav styling */
+    .nav-tab{ @apply px-4 md:px-5 py-2 rounded-t-2xl transition-colors duration-200 cursor-pointer font-medium; }
+    .nav-tab{position:relative;padding:.5rem 1rem;border-radius:.75rem .75rem 0 0;font-weight:600}
+    .nav-tab.inactive{ background: transparent; color: #3a2e2a; }
+    .nav-tab.active{background:#fffbff;border:1px solid #f3e8e3;border-bottom-color:transparent}
+    header.header-bleed{ background: linear-gradient(180deg, var(--snow) 0%, var(--snow) 82%, rgba(255,255,255,0) 100%); }
+    .drawer{ transform:translateX(100%); transition: transform .3s ease; }
+    .drawer.open{ transform:translateX(0); }
+    .reveal{ opacity:0; transform:translateY(12px); transition: all .6s ease; }
+    .reveal.show{ opacity:1; transform:translateY(0); }
+  </style>
+</head>
+<body class="bg-[#fffbff] text-[#3e251b] selection:bg-[#eac9c1] selection:text-black">
+  <!-- Fixed Navbar -->
+<header id="siteHeader" class="header-bleed fixed top-0 left-0 right-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-white/70 border-b border-[#ebd8d0]">
+  <div class="mx-auto max-w-7xl px-4 md:px-6">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo -->
+      <a href="index.html" class="flex items-center gap-2 group">
+        <img src="./assets/herologo.png" alt="ViscaraiAssist Logo" class="h-14 w-15 mt-1 rounded-lg shadow-glow">
+        <span class="font-extrabold tracking-tight font-serif text-lg text-[#a62d29]">ViscaraiAssist</span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-end gap-10">
+        <a href="index.html" data-tab="home" class="nav-tab inactive">Home</a>
+        <a href="career-assist.html" data-tab="career" class="nav-tab inactive">
+          Career Assist
+        </a>
+        <a href="take-test.html" data-tab="test" class="nav-tab inactive">
+          <button data-tab="career-assist" class="nav-tab active">Take Test</button>
+        </a>
+      </nav>
+
+      <!-- Right Controls -->
+      <div class="flex items-center gap-3" id="navAuthContainer">
+        <a id="navLogin"  href="login.html" data-tab="login" class="nav-tab inactive">
+        <button 
+          class="inline-flex btn-login items-center gap-1 rounded-full px-2 py-2 text-xs 
+                 md:px-4 md:py-2 md:text-sm font-semibold
+                 bg-[#bc7e6a] hover:bg-[#d3ab9e] text-white shadow-glow transition">
+          <span>Login / Sign up</span>
+        </button>
+        </a>
+
+        <!-- Mobile Hamburger -->
+        <button id="hamburger" class="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#ebd8d0] bg-white/70 hover:bg-[#f7f0ec] transition" aria-label="Open menu">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Drawer -->
+  <div id="drawer" class="drawer fixed top-0 right-0 h-screen w-72 bg-white border-l border-[#f3e8e3] shadow-2xl z-50 p-5 md:hidden">
+    <div class="flex items-center justify-between mb-6">
+      <div class="font-bold">Menu</div>
+      <button id="drawerCloseBtn" class="h-9 w-9 inline-flex items-center justify-center rounded-lg hover:bg-[#f7f0ec]">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path stroke-linecap="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div class="space-y-2">
+      <a href="index.html" data-tab="home" class="block px-3 py-3 rounded-xl hover:bg-[#f7f0ec]">Home</a>
+      <a href="career-assist.html" data-tab="career" class="block px-3 py-3 rounded-xl hover:bg-[#f7f0ec]">Career Assist</a>
+      <a href="take-test.html" data-tab="test" class="block px-3 py-3 rounded-xl bg-[#fffbff] border border-[#f3e8e3] ">Take Test</a>
+    </div>
+  </div>
+</header>
+
+  <!--  Main Content -->
+  <main class="mx-auto max-w-7xl px-4 md:px-6 pt-28 pb-20">
+
+    <!---- Headings ---->
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
+      <div>
+        <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">Test Your Skills</h1>
+        <p class="mt-2 text-sm md:text-base text-[#6b5b55] flex items-center gap-2">
+          
+          Challenge yourself with <a class="font-semibold">Mock Test</a>, <a class="font-semibold">Aptitude Test</a> and
+        </p>
+        <p class="text-[#6b5b55]">
+        🎯 Live <a class="font-semibold">AI Powered</a> Interviews
+      </p>
+      </div>
+      <div class="flex gap-2">
+        <button id="goApt" class="relative overflow-hidden rounded-full bg-[#bc7e6a] hover:bg-[#d3ab9e] text-white px-4 py-2 text-sm font-semibold shadow ">
+         <span class="relative z-10">APTITUDE TEST</span> 
+          <!-- Using Glow effect here -->
+         <span class="absolute inset-0 -translate-x-full animate-glassGlow bg-gradient-to-r from-transparent via-[#FFB5A7]/70 to-transparent"></span>
+        </button>
+        <button id="goAI" class="relative overflow-hidden rounded-full bg-[#bc7e6a] hover:bg-[#d3ab9e] text-white px-4 py-2 text-sm font-semibold shadow">
+          <span class="relative z-10">AI INTERVIEWER MODE</span>
+          <!-- Using Glow effect here -->
+         <span class="absolute inset-0 -translate-x-full animate-glassGlow bg-gradient-to-r from-transparent via-[#FFB5A7]/70 to-transparent"></span>
+        </button>
+      </div>
+    </div>
+
+    <!---- MOCK TEST for Desktop View ---->
+    <section aria-labelledby="mockTitle" class="mb-8">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="inline-flex h-6 w-6 items-center justify-center rounded bg-[#eac9c1]">🧪</span>
+        <h2 id="mockTitle" class="text-lg font-bold">MOCK TEST</h2>
+      </div>
+
+      <!-- Desktop grid -->
+      <div class="hidden md:grid md:grid-cols-2 gap-5">
+        <!-- Left -->
+        <div class="rounded-2xl border border-[#f3e8e3] bg-white p-5 shadow-sm">
+          <p class="text-sm text-[#6b5b55] mb-3">
+            <span class="font-semibold text-[#331e17]">Sharpen your skills with quick practice tests.</span>
+          </p>
+          <div class="text-sm mb-4">
+            <div class="font-semibold mb-1">Topic (based on your chosen career):</div>
+            <div id="mockTopic" class="rounded-lg border border-[#f3e8e3] bg-[#fffbff] px-3 py-2">—</div>
+          </div>
+          <button id="startMock" class="relative overflow-hidden rounded-xl bg-[#bc7e6a] hover:bg-[#d3ab9e] text-white px-4 py-2 font-semibold shadow transition">
+            <span class="relative z-10">START YOUR TEST</span>
+            <!-- using Glow effect here -->
+            <span class="absolute inset-0 -translate-x-full animate-glassGlow bg-gradient-to-r from-transparent via-[#FFB5A7]/70 to-transparent"></span>
+          </button>
+
+          <div class="mt-6">
+            <div class="font-semibold mb-2">Result of Previous Topic</div>
+            <dl class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+              <dt class="text-[#6b5b55]">Topic:</dt><dd id="mockResTopic">—</dd>
+              <dt class="text-[#6b5b55]">Score:</dt><dd id="mockResScore">—</dd>
+              <dt class="text-[#6b5b55]">Total no. of questions:</dt><dd id="mockResTotal">—</dd>
+              <dt class="text-[#6b5b55]">Correct:</dt><dd id="mockResCorrect">—</dd>
+              <dt class="text-[#6b5b55]">Wrong:</dt><dd id="mockResWrong">—</dd>
+            </dl>
+            <button id="retestMock" class="mt-4 rounded-lg border border-[#ebd8d0] bg-white hover:bg-[#f7f0ec] px-4 py-2 text-sm font-semibold">Retest</button>
+          </div>
+        </div>
+
+        <!-- Right Questions Panel -->
+        <div class="rounded-2xl border border-[#f3e8e3] bg-white p-5 shadow-sm">
+          <div id="mockQWrap" class="text-sm text-[#6b5b55]">
+            <div class="rounded-lg border border-[#f3e8e3] bg-[#fffbff] px-3 py-2">
+              Your questions will be displayed here.
+            </div>
+          </div>
+        </div>
+      </div>
+
+<!-- Mobile swipe 3-panels (Mock Test view in mobile site ) -->
+<div class="md:hidden flex flex-col gap-4 pb-2">
+  <!-- Start -->
+   <div class="rounded-2xl border border-[#f3e8e3] bg-white p-4 shadow-sm">
+    <p class="text-sm text-[#6b5b55] mb-3">
+      <span class="font-semibold text-[#331e17]">Sharpen your skills with quick practice tests.</span>
+    </p>
+       <div class="text-sm mb-3">
+           <div class="font-semibold mb-1">Topic (based on your chosen career):</div>
+           <div id="mockTopicSm" class="rounded-lg border border-[#f3e8e3] bg-[#fffbff] px-3 py-2">—</div>
+       </div>
+           <button id="startMockSm" class="relative overflow-hidden rounded-xl bg-[#bc7e6a] hover:bg-[#d3ab9e] text-white px-3 py-2 text-sm font-semibold shadow">
+            <span class="relative z-10">START YOUR TEST</span>
+            <!-- Using Glow effect here -->
+            <span class="absolute inset-0 -translate-x-full animate-glassGlow bg-gradient-to-r from-transparent via-[#FFB5A7]/70 to-transparent"></span>
+           </button>
+   </div>
+
+  <!-- Questions -->
+  <div class="rounded-2xl border border-[#f3e8e3] bg-white p-4 shadow-sm">
+    <div id="mockQWrapSm" class="text-sm text-[#6b5b55]">
+      <div class="rounded-lg border border-[#f3e8e3] bg-[#fffbff] px-3 py-2">
+        Your questions will be displayed here.
+      </div>
+    </div>
+  </div>
+
+  <!-- Result -->
+  <div class="rounded-2xl border border-[#f3e8e3] bg-white p-4 shadow-sm">
+    <div class="font-semibold mb-2">Result of Previous Topic</div>
+    <dl class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+      <dt class="text-[#6b5b55]">Topic:</dt><dd id="mockResTopicSm">—</dd>
+      <dt class="text-[#6b5b55]">Score:</dt><dd id="mockResScoreSm">—</dd>
+      <dt class="text-[#6b5b55]">Total no. of questions:</dt><dd id="mockResTotalSm">—</dd>
+      <dt class="text-[#6b5b55]">Correct:</dt><dd id="mockResCorrectSm">—</dd>
+      <dt class="text-[#6b5b55]">Wrong:</dt><dd id="mockResWrongSm">—</dd>
+    </dl>
+    <button id="retestMockSm" class="mt-4 rounded-lg border border-[#ebd8d0] bg-white hover:bg-[#f7f0ec] px-4 py-2 text-sm font-semibold">
+      Retest
+    </button>
+  </div>
+</div>
+
+    </section>
+
+    <!---- APTITUDE TEST for Desktop View ---->
+    <section id="aptitudeSection" aria-labelledby="aptTitle" class="mb-8">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="inline-flex h-6 w-6 items-center justify-center rounded bg-[#eac9c1]">🧠</span>
+        <h2 id="aptTitle" class="text-lg font-bold">APTITUDE TEST</h2>
+      </div>
+
+      <div class="hidden md:grid md:grid-cols-2 gap-5">
+        <!-- Left -->
+        <div class="rounded-2xl border border-[#f3e8e3] bg-white p-5 shadow-sm">
+          <p class="text-sm text-[#6b5b55] mb-3">
+            <span class="font-semibold text-[#331e17]">Unlock Potential Through Logic and Skills.</span>
+          </p>
+          <div class="text-sm mb-4">
+            <div class="font-semibold mb-1">Topic Name:</div>
+            <div id="aptTopic" class="rounded-lg border border-[#f3e8e3] bg-[#fffbff] px-3 py-2">—</div>
+          </div>
+           <button id="startMock" class="relative overflow-hidden rounded-xl bg-[#bc7e6a] hover:bg-[#d3ab9e] text-white px-4 py-2 font-semibold shadow transition">
+            <span class="relative z-10">START YOUR TEST</span>
+            <!-- using Glow effect here -->
+            <span class="absolute inset-0 -translate-x-full animate-glassGlow bg-gradient-to-r from-transparent via-[#FFB5A7]/70 to-transparent"></span>
+           </button>
+
+          <div class="mt-6">
+            <div class="font-semibold mb-2">Result of Previous Topic</div>
+            <dl class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+              <dt class="text-[#6b5b55]">Topic:</dt><dd id="aptResTopic">—</dd>
+              <dt class="text-[#6b5b55]">Score:</dt><dd id="aptResScore">—</dd>
+              <dt class="text-[#6b5b55]">Total no. of questions:</dt><dd id="aptResTotal">—</dd>
+              <dt class="text-[#6b5b55]">Correct:</dt><dd id="aptResCorrect">—</dd>
+              <dt class="text-[#6b5b55]">Wrong:</dt><dd id="aptResWrong">—</dd>
+            </dl>
+            <button id="retestApt" class="mt-4 rounded-lg border border-[#ebd8d0] bg-white hover:bg-[#f7f0ec] px-4 py-2 text-sm font-semibold">Retest</button>
+          </div>
+        </div>
+
+        <!-- Right (Questions) -->
+        <div class="rounded-2xl border border-[#f3e8e3] bg-white p-5 shadow-sm">
+          <div id="aptQWrap" class="text-sm text-[#6b5b55]">
+            <div class="rounded-lg border border-[#f3e8e3] bg-[#fffbff] px-3 py-2">
+              Your questions will be displayed here.
+            </div>
+          </div>
+        </div>
+      </div>
+
+ <!---- Mobile swipe 3-panels (Aptitude Test view in mobile site ) ---->
+      <div class="md:hidden flex flex-col gap-4 pb-2">
+           <!-- Start -->
+          <div class="rounded-2xl border border-[#f3e8e3] bg-white p-4 shadow-sm">
+            <p class="text-sm text-[#6b5b55] mb-3">
+            <span class="font-semibold text-[#331e17]">Unlock Potential Through Logic and Skills.</span>
+            </p>
+           <div class="text-sm mb-3">
+             <div class="font-semibold mb-1">Topic Name:</div>
+             <div id="aptTopicSm" class="rounded-lg border border-[#f3e8e3] bg-[#fffbff] px-3 py-2">—</div>
+           </div>
+              <button id="startAptSm" class="relative overflow-hidden rounded-xl bg-[#bc7e6a] hover:bg-[#d3ab9e] text-white px-3 py-2 text-sm font-semibold shadow">
+              <span class="relative z-10">START YOUR TEST</span>
+                <!-- Using Glow effect here -->
+              <span class="absolute inset-0 -translate-x-full animate-glassGlow bg-gradient-to-r from-transparent via-[#FFB5A7]/70 to-transparent"></span>
+              </button>
+          </div>
+
+            <!-- Questions -->
+          <div class="rounded-2xl border border-[#f3e8e3] bg-white p-4 shadow-sm">
+            <div id="aptQWrapSm" class="text-sm text-[#6b5b55]">
+               <div class="rounded-lg border border-[#f3e8e3] bg-[#fffbff] px-3 py-2">
+                 Your questions will be displayed here.
+               </div>
+            </div>
+          </div>
+
+       <!-- Result -->
+     <div class="rounded-2xl border border-[#f3e8e3] bg-white p-4 shadow-sm">
+      <div class="font-semibold mb-2">Result of Previous Topic</div>
+         <dl class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+           <dt class="text-[#6b5b55]">Topic:</dt><dd id="aptResTopicSm">—</dd>
+           <dt class="text-[#6b5b55]">Score:</dt><dd id="aptResScoreSm">—</dd>
+           <dt class="text-[#6b5b55]">Total no. of questions:</dt><dd id="aptResTotalSm">—</dd>
+           <dt class="text-[#6b5b55]">Correct:</dt><dd id="aptResCorrectSm">—</dd>
+           <dt class="text-[#6b5b55]">Wrong:</dt><dd id="aptResWrongSm">—</dd>
+         </dl>
+        <button id="retestAptSm" class="mt-4 rounded-lg border border-[#ebd8d0] bg-white hover:bg-[#f7f0ec] px-4 py-2 text-sm font-semibold">
+          Retest
+         </button>
+        </div>
+      </div>
+    </section>
+
+    <!------ AI INTERVIEWER MODE ------>
+  <section id="aiInterviewer" aria-labelledby="aiTitle" class="mb-4">
+    <div class="flex items-center gap-2 mb-3">
+      <span class="inline-flex h-6 w-6 items-center justify-center rounded bg-[#eac9c1]">🤖</span>
+      <h2 id="aiTitle" class="text-lg font-bold">AI INTERVIEWER MODE</h2>
+    </div>
+
+  <div class="rounded-2xl border border-[#f3e8e3] bg-white p-5 shadow-sm">
+    <!-- Live AI SCREEN -->
+    <div class="rounded-xl border border-[#ebd8d0] p-3">
+      <div class="relative flex flex-col">
+        <video id="video" class="w-full rounded-lg bg-black/5 aspect-video" autoplay playsinline muted></video>
+        
+        <!-- Overlay inside video -->
+          <div id="aiOverlay" class="absolute inset-0 flex flex-col items-center justify-center bg-gray-200 rounded-lg">
+            <div class="text-sm font-semibold text-black mb-3 md:text-lg">AI SCREEN</div>
+            <button id="startInterview" class="relative overflow-hidden rounded-full bg-[#bc7e6a] hover:bg-[#d3ab9e] text-white px-5 py-2 font-semibold shadow ">
+             <span class="relative z-10">START YOUR INTERVIEW</span>
+             <span class="absolute inset-0 -translate-x-full animate-glassGlow bg-gradient-to-r from-transparent via-[#FFB5A7]/70 to-transparent"></span>
+            </button>
+          </div>
+        </div>
+    </div>
+  </div>
+      <!-- Feedback + Suggestions -->
+        <div class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-5">
+          <!-- Feedback in the left corner -->
+          <div class="rounded-xl border border-[#ebd8d0] p-4">
+            <div class="font-semibold mb-3">Real-Time Feedback</div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm">Confidence:</span>
+              <div id="confStars" class="flex gap-1">
+                <span class="transition-transform">⭐</span><span class="transition-transform">⭐</span><span class="transition-transform">⭐</span><span class="opacity-40 transition-transform">⭐</span><span class="opacity-40 transition-transform">⭐</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm">Clarity:</span>
+              <div id="clarStars" class="flex gap-1">
+                <span class="transition-transform">⭐</span><span class="transition-transform">⭐</span><span class="opacity-40 transition-transform">⭐</span><span class="opacity-40 transition-transform">⭐</span><span class="opacity-40 transition-transform">⭐</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm">Overall:</span>
+              <span id="overallScore" class="font-semibold">—</span>
+            </div>
+          </div>
+
+          <!-- Suggestions in the Right corner -->
+          <div class="rounded-xl border border-[#ebd8d0] p-4">
+            <div class="font-semibold mb-3">AI Suggestions</div>
+            <ul id="aiSuggestions" class="space-y-2 text-sm">
+              <!-- Empty Skeleton Styling -->
+              <li class="h-3 rounded bg-[#f7f0ec]"></li>
+              <li class="h-3 rounded bg-[#f7f0ec] w-11/12"></li>
+              <li class="h-3 rounded bg-[#f7f0ec] w-10/12"></li>
+              <li class="h-3 rounded bg-[#f7f0ec] w-9/12"></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+<!-- Footer -->
+<footer class="border-t border-[#f3e8e3] py-10">
+  <div class="mx-auto max-w-7xl px-6 md:px-8 text-sm grid grid-cols-1 md:grid-cols-4 gap-8">
+    
+    <!-- Logo + Info -->
+    <div class="space-y-3">
+      <div class="flex items-center space-x-2">
+        <img src="./assets/logo.png" alt="ViscaraiAssist Logo" class="h-32 w-32 mb-10 rounded-lg shadow-glow">
+        <span class="text-xl font-semibold font-serif text-[#a62d29] mb-20">ViscaraiAssist</span>
+      </div>
+      <p class="text-[#6b5b55] text-sm">We turn career confusion into career clarity with the power of AI. <br>Our intelligent roadmaps guide you step by step, helping you explore the right opportunities that match your skills and dreams. From discovering career paths<br> to landing your dream job, we make the journey simple, smart, and future-ready.</p>
+      <div class="flex space-x-3 pt-3">
+        <a href="#" class="text-[#6b5b55] hover:text-black "><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="text-[#6b5b55] hover:text-black"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="text-[#6b5b55] hover:text-black"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" class="text-[#6b5b55] hover:text-black"><i class="fab fa-instagram"></i></a>
+      </div>
+    </div>
+
+    <!-- coloumn-1 -->
+    <div class=" mt-8 ml-8">
+      <h3 class="font-semibold text-[#6b5b55] mb-3">Quick Links</h3>
+      <ul class="space-y-2">
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">Home</a></li>
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">Career Assist</a></li>
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">Take Test</a></li>
+      </ul>
+    </div>
+
+    <!-- coloumn-2 -->
+    <div class=" mt-8 ml-8">
+      <h3 class="font-semibold text-[#6b5b55] mb-3">Site Inforamtion</h3>
+      <ul class="space-y-2">
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">Career Assistant</a></li>
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">Job Recommendations</a></li>
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">AI Interviewer</a></li>
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">MockTests</a></li>
+      </ul>
+    </div>
+
+    <!-- coloumn-3 -->
+    <div class=" mt-8 ml-8">
+      <h3 class="font-semibold text-[#6b5b55] mb-3">About Us</h3>
+      <ul class="space-y-2">
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">Contact Us</a></li>
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">Email</a></li>
+        <li><a href="#" class="hover:text-black text-[#6b5b55]">Terms of Service</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Bottom small tag-->
+  <div class="mt-8 text-center text-xs text-black">
+    © 2025 ViscaraiAssist. All rights reserved.
+  </div>
+</footer>
+<script type="module" src="./js/auth.js"></script>
+<script type="module" src="./js/header.js"></script>
+</body>
+</html>
