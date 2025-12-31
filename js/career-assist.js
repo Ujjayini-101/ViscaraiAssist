@@ -145,6 +145,12 @@ function updateRoleButtonsState() {
   });
 }
 
+// ---------- Day-in-the-Life Simulation State ----------
+let simulationActive = false;
+let simulationRole = null;
+let simulationStage = null; 
+// stages: "intro" | "await_confirmation" | "tasks"
+
 const sendBtn = document.getElementById('sendBtn');
 const composer = document.getElementById('composer');
 const chatScroll = document.getElementById('chatScroll');
@@ -556,10 +562,109 @@ Recommended Resources:
 `;
 }
 
-const BACKEND_BASE = "https://career-backend-production-2e03.up.railway.app";   // <-- make sure your backend runs on 3000
+function buildDaySimulationPrompt(role) {
+  return `
+You are an experienced industry professional acting as a mentor.
+
+The user has chosen the role: "${role}"
+
+IMPORTANT:
+This is ONLY an ORIENTATION message.
+DO NOT give any real tasks yet.
+
+Explain clearly and professionally:
+
+1. What this "Day-in-the-Life Simulation" is
+2. How the workday will be structured by time blocks:
+   - Morning (9:00–12:00)
+   - Short break
+   - Lunch
+   - Afternoon (12:15–4:00)
+3. Explain that:
+   - Tasks will be released step-by-step
+   - Each task will have a time window
+   - Tasks reflect REAL industry work
+4. Explain that the user must type DONE to move to the next phase
+5. Reassure that this will feel like working with a real professional
+
+End by asking EXACTLY this question:
+
+"Do you want to continue with this role for the simulation, or would you like to change the role?"
+
+Do not include tasks.
+Do not simulate the day yet.
+`;
+}
+
+
+function buildMorningTaskPrompt(role) {
+  return `
+You are simulating a real workday for the role: "${role}"
+
+Generate ONLY MORNING TASKS.
+
+Rules:
+- Use a professional workflow format
+- Use clear time blocks
+- Do NOT use stars (*)
+- Make headings bold automatically
+- Be realistic and industry-level
+
+Format EXACTLY like this:
+
+MORNING WORKFLOW (9:00 AM – 12:00 PM)
+
+9:00 – 10:00  
+[Task description]
+
+10:00 – 11:00  
+[Task description]
+
+11:00 – 12:00  
+[Task description]
+
+Then write:
+"Type DONE once you finish the morning tasks to proceed to lunch."
+
+Do not include afternoon tasks.
+`;
+}
+
+function buildAfternoonTaskPrompt(role) {
+  return `
+Continue the same workday simulation for the role: "${role}"
+
+Generate AFTERNOON TASKS only.
+
+Rules:
+- Continue from lunch break
+- Use time blocks
+- Be realistic and professional
+- No stars (*), no emojis
+
+Format EXACTLY like this:
+
+AFTERNOON WORKFLOW
+
+12:15 – 1:00  
+[Task description]
+
+2:00 – 4:00  
+[Task description]
+
+END OF DAY OUTCOME  
+- What was completed  
+- What remains pending  
+
+End with:
+"Simulation complete. You can restart or try a new role anytime."
+`;
+}
+
+const BACKEND_BASE = "https://career-backend-production.up.railway.app";   // <-- make sure your backend runs on 3000
 
 async function callBackendWithPrompt(prompt, extra = {}) {
-  const url = `${BACKEND_BASE}/api/gemini`; // absolute
+  const url = `${BACKEND_BASE}/api/groq`; // absolute
   console.log("[frontend] calling", url);
 
   const body = Object.assign({ prompt }, extra);
@@ -700,7 +805,7 @@ async function callFlashChat(userMessage) {
     }
 
     // call backend with flash model override 
-    const reply = await callBackendWithPrompt(promptBody, { model: 'gemini-2.5-flash' });
+    const reply = await callBackendWithPrompt(promptBody, { model: 'llama-3.1-8b-instant' });
 
     removeNode(typing);
 
@@ -815,7 +920,7 @@ async function getCareerSuggestions() {
       return;
     }
 
-    // No URL: directly prompt Gemini using surveyAnswers 
+    // No URL: directly prompt Groq using surveyAnswers 
     const prompt = buildSuggestionsPrompt(surveyAnswers);
     const reply = await callBackendWithPrompt(prompt);
     removeNode(typing);
@@ -1394,14 +1499,123 @@ sendBtn?.addEventListener('click', async () => {
     return;
   }
 
-  // Normal chat path -> using Flash chat
+  // ---------- Simulation Chat Intercept ----------
+// ---------- Simulation Chat Intercept ----------
+if (simulationActive) {
+  const msg = v.toLowerCase();
   composer.value = '';
-  try {
-    await callFlashChat(v);
-  } catch (e) {
-    console.error("sendBtn flash chat error:", e);
-    appendBotHTML('<div class="text-sm text-red-600">Oops — chat failed. Try again.</div>');
+
+  // 1️⃣ User agrees after orientation
+  if (
+    simulationStage === "await_confirmation" &&
+    (msg.includes("yes") || msg.includes("continue"))
+  ) {
+    simulationStage = "morning_tasks";
+    appendBubble("Yes, continue with this role.", true);
+
+    const typing = showTypingIndicator(
+      ['Preparing morning workflow...', 'Assigning real tasks...'],
+      1000
+    );
+
+    try {
+      const reply = await callBackendWithPrompt(
+        buildMorningTaskPrompt(simulationRole)
+      );
+      removeNode(typing);
+
+      appendBotHTML(
+        `<div class="text-sm">${escapeHtml(reply).replace(/\n/g, '<br/>')}</div>`
+      );
+
+      simulationStage = "await_morning_done";
+      return;
+    } catch (e) {
+      removeNode(typing);
+      appendBotHTML(`<div class="text-sm text-red-600">Failed to generate morning tasks.</div>`);
+      return;
+    }
   }
+
+  // 2️⃣ Morning tasks completed
+  if (
+    simulationStage === "await_morning_done" &&
+    msg.includes("done")
+  ) {
+    simulationStage = "afternoon_tasks";
+    appendBubble("DONE", true);
+
+    const typing = showTypingIndicator(
+      ['Preparing afternoon tasks...', 'Continuing workday...'],
+      1000
+    );
+
+    try {
+      const reply = await callBackendWithPrompt(
+        buildAfternoonTaskPrompt(simulationRole)
+      );
+      removeNode(typing);
+
+      appendBotHTML(
+        `<div class="text-sm">${escapeHtml(reply).replace(/\n/g, '<br/>')}</div>`
+      );
+
+      simulationStage = "completed";
+      return;
+    } catch (e) {
+      removeNode(typing);
+      appendBotHTML(`<div class="text-sm text-red-600">Failed to generate afternoon tasks.</div>`);
+      return;
+    }
+  }
+
+  // 3️⃣ Change role at any point
+  if (msg.includes("change")) {
+    simulationStage = "intro";
+    appendBubble("I want to change the role.", true);
+    appendBotHTML(`<div class="text-sm">Please type the new role you want to simulate.</div>`);
+    return;
+  }
+
+  // 4️⃣ New role entered
+  if (simulationStage === "intro") {
+    simulationRole = v.trim();
+    appendBubble(simulationRole, true);
+
+    const typing = showTypingIndicator(
+      ['Setting up new simulation...', 'Preparing orientation...'],
+      1000
+    );
+
+    try {
+      const reply = await callBackendWithPrompt(
+        buildDaySimulationPrompt(simulationRole)
+      );
+      removeNode(typing);
+
+      appendBotHTML(
+        `<div class="text-sm">${escapeHtml(reply).replace(/\n/g, '<br/>')}</div>`
+      );
+
+      simulationStage = "await_confirmation";
+      return;
+    } catch (e) {
+      removeNode(typing);
+      appendBotHTML(`<div class="text-sm text-red-600">Simulation failed.</div>`);
+      return;
+    }
+  }
+}
+
+// ---------- Default chat ----------
+composer.value = '';
+try {
+  await callFlashChat(v);
+} catch (e) {
+  console.error("sendBtn flash chat error:", e);
+  appendBotHTML('<div class="text-sm text-red-600">Oops — chat failed.</div>');
+}
+
 });
 
 composer?.addEventListener('keydown', (e) => {
@@ -1410,6 +1624,55 @@ composer?.addEventListener('keydown', (e) => {
     sendBtn.click();
   }
 });
+
+// ---------- Day-in-the-Life Simulator Button ----------
+document.addEventListener('click', async (e) => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+
+  if (btn.textContent.trim() === "Start Your Experience") {
+    if (!surveyChosenRole) {
+      appendBotHTML(
+        `<div class="text-sm text-red-600">Please complete the survey and choose a role first.</div>`,
+        { avatar: false }
+      );
+      return;
+    }
+
+    simulationActive = true;
+    simulationRole = surveyChosenRole;
+    simulationStage = "intro";
+
+    appendBubble(
+      `Start a one-day work simulation for the role: ${simulationRole}`,
+      true
+    );
+
+    const typing = showTypingIndicator(
+      ['Preparing real-world simulation...', 'Analyzing industry workflow...'],
+      1000
+    );
+
+    try {
+      const reply = await callBackendWithPrompt(
+        buildDaySimulationPrompt(simulationRole)
+      );
+      removeNode(typing);
+
+      appendBotHTML(
+        `<div class="text-sm">${escapeHtml(reply).replace(/\n/g, '<br/>')}</div>`
+      );
+
+      simulationStage = "await_confirmation";
+    } catch (err) {
+      removeNode(typing);
+      appendBotHTML(
+        `<div class="text-sm text-red-600">Failed to start simulation. Try again.</div>`
+      );
+    }
+  }
+});
+
 
 // ---------- Start / initialization (intro rendering + retake UI) ----------
 function renderIntroInitial() {
@@ -1679,7 +1942,7 @@ attachBtn?.addEventListener('click', (e) => {
           } else {
             const attachments = [{ name: file.name, type: file.type, dataURL: bubble._dataURL }];
             const prompt = `User uploaded file(s). Filename: ${file.name}. Filetype: ${file.type}. Use the content to help with the conversation or analysis as appropriate. If image, describe or extract relevant info.`;
-            const resp = await fetch(`${BACKEND_BASE}/api/gemini`, {
+            const resp = await fetch(`${BACKEND_BASE}/api/groq`, {
               method: 'POST',
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ prompt, attachments })
